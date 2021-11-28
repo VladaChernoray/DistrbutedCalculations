@@ -1,0 +1,73 @@
+package com.knu.vlada.lock;
+
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class ReadWriteLock {
+    private int readerWait;
+    private int writerWait;
+    private int readerActive;
+    private int writerActive;
+    private ReentrantLock readerLock;
+    private ReentrantLock writerLock;
+    private Condition readerCond;
+    private Condition writerCond;
+
+    public ReadWriteLock() {
+        readerWait = 0;
+        writerWait = 0;
+        readerActive = 0;
+        writerActive = 0;
+        readerLock = new ReentrantLock();
+        writerLock = new ReentrantLock();
+        readerCond = readerLock.newCondition();
+        writerCond = writerLock.newCondition();
+    }
+
+    public void startWrite() throws InterruptedException {
+        writerLock.lock();
+        writerWait++;
+        while(writerActive == 1 || readerWait > 0) writerCond.await();
+        writerWait--;
+        writerActive = 1;
+        writerLock.unlock();
+    }
+
+    public void endWrite() {
+        writerLock.lock();
+        writerActive = 0;
+        if(readerWait > 0) {
+            readerLock.lock();
+            readerCond.signalAll();
+            readerLock.unlock();
+        } else {
+            readerLock.lock();
+            readerCond.signal();
+            readerLock.unlock();
+        }
+        writerLock.unlock();
+    }
+
+    public void startRead() throws InterruptedException {
+        readerLock.lock();
+        readerWait++;
+        while(writerActive == 1 || writerWait > 0) {
+            readerCond.await();
+        }
+        readerWait--;
+        readerActive++;
+        readerCond.signal();
+        readerLock.unlock();
+    }
+
+    public void endRead() {
+        readerLock.lock();
+        readerActive--;
+        if (readerActive == 0) {
+            writerLock.lock();
+            writerCond.signal();
+            writerLock.unlock();
+        }
+        readerLock.unlock();
+    }
+}
