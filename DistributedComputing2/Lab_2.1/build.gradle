@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'io.freefair.lombok' version '5.1.0'
+}
+
+application {
+    mainClass = 'Main'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<werehouse>
+    <section type = "Musical instruments"  name="Keyboard instruments">
+        <product price="10000" name="Yamaha GB1K"/>
+        <product price="30000" name="Kavai SK-EX EP"/>
+    </section>
+    <section type="Musical instruments" name="Percussion instruments">
+        <product price="30000" name="Yamaha RDP2F5 SLG"/>
+        <product price="20000" name="Pearli EXA"/>
+    </section>
+</werehouse>
